@@ -1,54 +1,22 @@
-import csvtojson from 'csvtojson';
-import fs from 'fs';
+import csv from 'csvtojson/v2';
+import CSVError from "csvtojson/v2/CSVError";
+import { WriteStream, createWriteStream } from 'fs';
 import path from 'path';
-import { pipeline, Transform } from 'stream';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const csvFilePath: string = path.join(__dirname, './csv/nodejs-hw1-ex1.csv');
+const outputFilePath: string =  path.join(__dirname, './csv/nodejs-hw1-ex1.txt');
 
-class ControlLineStream extends Transform {
-  constructor() {
-    super();
+const writeStream: WriteStream = createWriteStream(outputFilePath);
 
-    this.data = '';
-  }
+csv()
+    .fromFile(csvFilePath)
+    .subscribe((json) => new Promise((resolve) => {
+        const TRANSFER_SIGN = '\n';
+        writeStream.write(JSON.stringify(json) + TRANSFER_SIGN);
 
-  _transform(chunk, encoding, callback) {
-    const TRANSFER_SIGN = '\n';
-    const index = chunk.toString().indexOf(TRANSFER_SIGN);
-
-    console.log(index)
-
-    if (index !== -1) {
-      this.data+= chunk.toString().slice(0, index);
-
-      console.log(this.data, 'data');
-      this.push(this.data);
-
-      this.data = chunk.toString().slice(index, chunk.toString().length);
-    } else {
-      this.data+=chunk;
-    }
-
-    callback();
-  }
-}
-
-const readStream = fs.createReadStream(path.join(__dirname, './csv/nodejs-hw1-ex1.csv'));
-const writeStream = fs.createWriteStream(path.join(__dirname, './csv/nodejs-hw1-ex1.txt'));
-const controlLineStream = new ControlLineStream();
-
-pipeline(
-  readStream,
-  controlLineStream,
-  csvtojson(),
-  writeStream,
-  (err) => {
-    if (err) {
-      console.error(err);
-    } else {
-      console.log('The file was created successfully');
-    }
-  }
-);
+        resolve();
+    }), (err: CSVError) => {
+        console.error(err);
+    }, () => {
+        console.log('The file was created successfully');
+    });
