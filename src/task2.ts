@@ -18,9 +18,12 @@ class ControlLineStream extends Transform {
     const TRANSFER_SIGN = '\n';
     const index = chunk.toString().indexOf(TRANSFER_SIGN);
 
+    console.log(index)
+
     if (index !== -1) {
       this.data+= chunk.toString().slice(0, index);
 
+      console.log(this.data, 'data');
       this.push(this.data);
 
       this.data = chunk.toString().slice(index, chunk.toString().length);
@@ -32,9 +35,7 @@ class ControlLineStream extends Transform {
   }
 }
 
-const readStream = fs.createReadStream(path.join(__dirname, './csv/nodejs-hw1-ex1.csv'), {
-  highWaterMark: 10
-});
+const readStream = fs.createReadStream(path.join(__dirname, './csv/nodejs-hw1-ex1.csv'));
 const writeStream = fs.createWriteStream(path.join(__dirname, './csv/nodejs-hw1-ex1.txt'));
 const controlLineStream = new ControlLineStream();
 

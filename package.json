@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "task1": "nodemon src/task1.mjs",
-    "task2": "nodemon src/task2.mjs"
+    "task1": "nodemon src/task1.ts",
+    "task2": "nodemon src/task2.ts"
   },
   "repository": {
     "type": "git",
@@ -19,7 +18,9 @@
   },
   "homepage": "https://github.com/nastya-lobova/aws-hm-1#readme",
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
   },
   "dependencies": {
     "csvtojson": "^2.0.10"
